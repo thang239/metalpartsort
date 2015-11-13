@@ -1,0 +1,7 @@
+#Ignore latex junk
+*.aux
+*.log
+*.synctex.gz
+.idea/
+__pycache__/
+*.tex

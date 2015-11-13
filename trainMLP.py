@@ -15,10 +15,15 @@ import numpy as np
 class MLP:
     def __init__(self,filename):
         f = open(filename,'r');
+        for line in f:
+            print('line')
+    def train(self):
+        print('I am training ...')
 
 
 
-
-
-
+if len(sys.argv)<3:
+    print('Please enter input file name, for instance: python3 trainLMP.py train_data.csv');
+else:
+    nnet = MLP(sys.argv[2])
 
