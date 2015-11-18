@@ -23,14 +23,7 @@ def sigmoid(x):
 def derivative_sigmoid(a):
     return a * (1-a);
 
-####################################################################################
-# Initialize matrix, not sure we can use python for this
-####################################################################################
-def initialize_matrix(m,n,fill = 0.0):
-    matrix = []
-    for i in range(m):
-        matrix.append([fill]*n)
-    return matrix;
+
 def match_output(num):
     match = {
         1.0:[1,0,0,0],
@@ -60,11 +53,12 @@ class MLP:
         # Initialize weights for all node, using np.random.rand for convenience
         self.weight_ih = 2 * np.random.rand(self.input, self.hidden_node)-1;
         self.weight_ho = 2 * np.random.rand(self.hidden_node, self.output_node)-1;
-        print(self.weight_ho)
-        print(self.hidden_node,self.output_node)
+        # print(self.weight_ho)
+        # print(self.hidden_node,self.output_node)
     def feedForward(self, sample):
         for i in range(self.input-1):
             self.ai[i+1] = sample[i]
+        # print(self.ai)
         # Update activations in hidden node
         for i in range(self.hidden_node):
             temp = 0.0
@@ -77,7 +71,8 @@ class MLP:
             for j in range(self.hidden_node):
                 temp+=self.ah[j]*self.weight_ho[j][i]
             self.ao[i] = sigmoid(temp);
-        # return self.ao
+        # print(self.ao)
+        return self.ao
     def backProgapate(self, sample, learning_rate):
         delta_output = [0.0]*self.output_node;
         delta_hidden = [0.0]*self.hidden_node;
@@ -108,7 +103,7 @@ class MLP:
         print(self.weight_ih);
         print('I am training ...')
         dump_epochs = [0,10,100,1000,10000];
-        for i in range(iterations):
+        for i in range(iterations+1):
             for sample in self.samples:
                 # print(sample)
                 self.feedForward(sample)
@@ -116,25 +111,16 @@ class MLP:
             if i in dump_epochs:
                 self.export_configuration(i)
 
-        print(self.weight_ho);
-        print(self.weight_ih);
+        # print(self.weight_ho);
+        # print(self.weight_ih);
 
     def parse_csv(self,filename):
-        samples = [[float(i) for i in line.rstrip().split(',')] for line in open(filename,'r')]
+        with open(filename) as f:
+            lines = filter(None,(line.rstrip() for line in f))
+            samples = [[float(i) for i in line.split(',')] for line in lines]
         return samples
-
     def export_configuration(self,filename):
         f = open(str(filename)+'_config','wb')
-        # # Write parameters
-        # # Number of input node
-        # f.write('%s\n'%(self.input-1))
-        # # Number of hidden node
-        # f.write('%s\n'%(self.hidden_node))
-        # # Number of output node
-        # f.write('%s\n'%(self.output_node))
-        # # Export weights
-        # f.write('Weights from input to hidden\n')
-        # f.w
         pickle.dump(self,f,pickle.HIGHEST_PROTOCOL)
         f.close()
 ####################################################################################
@@ -144,11 +130,14 @@ NUM_LAYERS = 3
 NUM_INPUT_NODE = 2
 NUM_HIDDEN_NODE = 5
 NUM_OUTPUT_NODE = 4
-NUM_EPOCHS = 100
-LEARNING_RATE = 0.01
+NUM_EPOCHS = 1000
+LEARNING_RATE = 0.1
+def main():
+    if len(sys.argv)<2:
+        print('Please enter input file name, for instance: python3 trainLMP.py train_data.csv')
+    else:
+        nnet = MLP(sys.argv[1], NUM_LAYERS, NUM_INPUT_NODE, NUM_HIDDEN_NODE, NUM_OUTPUT_NODE)
+        nnet.train(LEARNING_RATE, NUM_EPOCHS)
 
-if len(sys.argv)<2:
-    print('Please enter input file name, for instance: python3 trainLMP.py train_data.csv')
-else:
-    nnet = MLP(sys.argv[1], NUM_LAYERS, NUM_INPUT_NODE, NUM_HIDDEN_NODE, NUM_OUTPUT_NODE)
-    nnet.train(LEARNING_RATE, NUM_EPOCHS)
+if __name__ == "__main__":
+    main()
