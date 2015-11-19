@@ -4,7 +4,8 @@ import math
 import pickle
 
 from pylab import *
-
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 ######################################
 # Node Class
 #
@@ -249,7 +250,8 @@ def chiSquarePruning(tree,input_list,threshold):
 #
 ######################################
 
-def getPlotList(tree,input_list):
+def getPlotList(tree,input_list,level,op):
+
     if tree.left != None and tree.right != None:
         separated_data=split_data(input_list,tree.attribute,tree.threshold)
         left_data=separated_data[0]
@@ -258,28 +260,29 @@ def getPlotList(tree,input_list):
         y=0
         width=0
         height=0
-        if tree.attribute==1:
+        if tree.attribute==0:
             x=tree.threshold
-            y=float(min(left_data,key=lambda x : x[1])[0])
-            width=math.fabs(float(min(left_data,key=lambda x : x[0])[0])-float(x))
-            height=math.fabs(float(max(left_data,key=lambda x : x[1])[0])-float(y))
-            print(x,y,-width,height,"First")
-
-            y=float(min(right_data,key=lambda x : x[1])[0])
-            width=math.fabs(float(max(left_data,key=lambda x : x[0])[0])-float(x))
-            height=math.fabs(float(max(left_data,key=lambda x : x[1])[0])-float(y))
-            print(x,y,width,height,"First")
+            y=min(min(left_data,key=lambda x : x[1])[0],min(right_data,key=lambda x : x[1])[0])
+            height=max(float(max(left_data,key=lambda x : x[1])[0]),float(max(right_data,key=lambda x : x[1])[0]))-float(y)
+            width=math.fabs(float(min(left_data,key=lambda x : x[0])[0])-x)
+            op.append([x,y,-width,height,level])
+            #print(x,y,-width,height,"first")
+            width=math.fabs(float(max(left_data,key=lambda x : x[0])[0]) - float(x))
+            #print(x,y,width,height,"first")
+            op.append([x,y,width,height,level])
         else:
             y=tree.threshold
-            x=min(left_data,key=lambda x : x[0])[0]
-            width=math.fabs(float(max(left_data,key=lambda x : x[0])[0]) - float(x))
-            height=math.fabs(float(min(left_data,key=lambda x : x[1])[0]) - float(y))
-            print(x,y,width,-height,"Second")
-
-            x=float(min(right_data,key=lambda x : x[1])[0])
-            width=math.fabs(float(max(left_data,key=lambda x : x[0])[0]) - float(x))
+            x=min(min(left_data,key=lambda x : x[0])[0],min(right_data,key=lambda x : x[0])[0])
+            width=max(float(max(left_data,key=lambda x : x[0])[0]),float(max(right_data,key=lambda x : x[0])[0]))-float(x)
+            height=math.fabs(float(min(left_data,key=lambda x : x[1])[0])-y)
+            op.append([x,y,width,-height,level])
+            #print(x,y,width,-height,"Second")
             height=math.fabs(float(max(left_data,key=lambda x : x[1])[0]) - float(y))
-            print(x,y,width,height,"Second")
+            #print(x,y,width,height,"Second")
+            op.append([x,y,width,height,level])
+
+        getPlotList(tree.left,left_data,level+1,op)
+        getPlotList(tree.right,right_data,level+1,op)
 
 def readFile(filename):
     class_values=dict()
@@ -299,8 +302,20 @@ def readFile(filename):
 def parse_csv(filename):
         with open(filename) as f:
             lines = filter(None,(line.rstrip() for line in f))
-            samples = [[float(i) for i in line.split(',')] for line in lines]
+            samples = [[i for i in line.split(',')] for line in lines]
         return samples
+
+def plotSpace(list):
+    plot_list=[]
+    color=['r','g','b','violet','gray','cyan','m','brown','orange','purple']
+    for item in list:
+        plot_list.append(patches.Rectangle((float(item[0]),float(item[1])),float(item[2]),float(item[3]),fill=False,edgecolor=color[int(item[4])]))
+    fig6 = plt.figure()
+    ax6 = fig6.add_subplot(111)
+    for p in plot_list:
+        ax6.add_patch(p)
+    plt.show()
+
 ######################################
 #  main()
 ######################################
@@ -310,17 +325,25 @@ def main():
     significance_level=5
     significance = {1:6.635,2.5:5.024,5:3.841,10:2.706,90:0.016,95:0.004,99:0.00}
     # Extracting the Training data
-    list,class_values=readFile(filename)
+    #list,class_values=readFile(filename)
+    list=parse_csv(filename)
+    class_values=dict()
+    output_index=len(list[0])-1
+    for x in list:
+        addData(class_values,x[output_index])
     for x in range(1,len(list[0])):
         attributes +=[x-1]
     tree=decision_tree(list,attributes,class_values)
-    tree.printStatistics("Decision Tree")
-    tree.export_configuration("decisionTree")
-    #pickle.dump(tree, open("DecisionTree.p", "wb"))
-    print()
-    #getPlotList(tree,list)
     chiSquarePruning(tree,list,significance[significance_level])
-    tree.printStatistics("Pruned Tree")
-    tree.export_configuration("prunedTree")
+    op=[]
+    getPlotList(tree,list,0,op)
+    plotSpace(op)
+    #tree.printStatistics("Decision Tree")
+    #tree.export_configuration("decisionTree")
+    #print(op)
 
-main()
+    #tree.printStatistics("Pruned Tree")
+    #tree.export_configuration("prunedTree")
+
+if __name__ == "__main__":
+    main()
