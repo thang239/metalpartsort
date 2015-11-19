@@ -53,8 +53,9 @@ class MLP:
         # Initialize weights for all node, using np.random.rand for convenience
         self.weight_ih = 2 * np.random.rand(self.input, self.hidden_node)-1;
         self.weight_ho = 2 * np.random.rand(self.hidden_node, self.output_node)-1;
-        # print(self.weight_ho)
-        # print(self.hidden_node,self.output_node)
+
+        #Store error for each epochs
+        self.error = []
     def feedForward(self, sample):
         for i in range(self.input-1):
             self.ai[i+1] = sample[i]
@@ -96,24 +97,29 @@ class MLP:
         for i in range(self.input):
             for j in range(self.hidden_node):
                 self.weight_ih[i][j] = self.weight_ih[i][j] + learning_rate * self.ai[i]*delta_hidden[j];
-        #Update weights in input layer
+        #Calculate error for current epoch
+        error = 0.0
+        for i in range(self.output_node):
+            error+=1/2*(output[i]-self.ao[i])**2;
+        return error
 
     def train(self, learning_rate, iterations):
-        print(self.weight_ho);
-        print(self.weight_ih);
+        # print(self.weight_ho);
+        # print(self.weight_ih);
         print('I am training ...')
         dump_epochs = [0,10,100,1000,10000];
+        len_samples = len(self.samples)
+        sse = []
         for i in range(iterations+1):
+            errList = []
             for sample in self.samples:
                 # print(sample)
                 self.feedForward(sample)
-                self.backProgapate(sample, learning_rate)
+                errList.append(self.backProgapate(sample, learning_rate))
             if i in dump_epochs:
                 self.export_configuration(i)
-
-        # print(self.weight_ho);
-        # print(self.weight_ih);
-
+            sse.append(sum(errList)/len_samples);
+        self.dump_sse(sse)
     def parse_csv(self,filename):
         with open(filename) as f:
             lines = filter(None,(line.rstrip() for line in f))
@@ -123,6 +129,10 @@ class MLP:
         f = open(str(filename)+'_config','wb')
         pickle.dump(self,f,pickle.HIGHEST_PROTOCOL)
         f.close()
+    def dump_sse(self,sse):
+        f = open('error.csv','w')
+        for s in sse:
+            f.write('%s\n'%s)
 ####################################################################################
 # Define parameters
 ####################################################################################
@@ -130,7 +140,7 @@ NUM_LAYERS = 3
 NUM_INPUT_NODE = 2
 NUM_HIDDEN_NODE = 5
 NUM_OUTPUT_NODE = 4
-NUM_EPOCHS = 1000
+NUM_EPOCHS = 10000
 LEARNING_RATE = 0.1
 def main():
     if len(sys.argv)<2:
