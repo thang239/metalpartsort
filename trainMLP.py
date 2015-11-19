@@ -134,7 +134,7 @@ class MLP:
         for s in sse:
             f.write('%s\n'%s)
             xvalues.append(sse.index(s))
-        print(xvalues)
+        # print(xvalues)
         plt.plot(xvalues,sse,'r')
         plt.xlabel('Epochs')
         plt.ylabel('Sum squared error')
@@ -150,14 +150,16 @@ NUM_LAYERS = 3
 NUM_INPUT_NODE = 2
 NUM_HIDDEN_NODE = 5
 NUM_OUTPUT_NODE = 4
-NUM_EPOCHS = 1000
+NUM_EPOCHS = 10000
 LEARNING_RATE = 0.1
 def main():
     if len(sys.argv)<2:
-        print('Please enter input file name, for instance: python3 trainLMP.py train_data.csv')
+        print('Please enter input file name, for instance: python3 trainLMP.py train_data.csv 10000')
     else:
         nnet = MLP(sys.argv[1], NUM_LAYERS, NUM_INPUT_NODE, NUM_HIDDEN_NODE, NUM_OUTPUT_NODE)
-        nnet.train(LEARNING_RATE, NUM_EPOCHS)
-
+        if sys.argv[2]==None:
+            nnet.train(LEARNING_RATE, NUM_EPOCHS)
+        else:
+            nnet.train(LEARNING_RATE, int(sys.argv[2]))
 if __name__ == "__main__":
     main()
