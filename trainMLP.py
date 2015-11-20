@@ -13,6 +13,7 @@
 import pickle
 import sys
 import numpy as np
+import matplotlib.pyplot as plt
 np.random.seed(100)
 
 ####################################################################################
@@ -22,8 +23,6 @@ def sigmoid(x):
     return 1/(1+np.exp(-x));
 def derivative_sigmoid(a):
     return a * (1-a);
-
-
 def match_output(num):
     match = {
         1.0:[1,0,0,0],
@@ -119,7 +118,7 @@ class MLP:
             if i in dump_epochs:
                 self.export_configuration(i)
             sse.append(sum(errList)/len_samples);
-        self.dump_sse(sse)
+        self.dump_sse_and_plot_learning_curve(sse)
     def parse_csv(self,filename):
         with open(filename) as f:
             lines = filter(None,(line.rstrip() for line in f))
@@ -129,10 +128,22 @@ class MLP:
         f = open(str(filename)+'_config','wb')
         pickle.dump(self,f,pickle.HIGHEST_PROTOCOL)
         f.close()
-    def dump_sse(self,sse):
+    def dump_sse_and_plot_learning_curve(self,sse):
         f = open('error.csv','w')
+        xvalues = []
         for s in sse:
             f.write('%s\n'%s)
+            xvalues.append(sse.index(s))
+        # print(xvalues)
+        plt.plot(xvalues,sse,'r')
+        plt.xlabel('Epochs')
+        plt.ylabel('Sum squared error')
+        plt.title('Sum squared error after each epoch')
+        plt.savefig('learning_curve.png')
+        plt.show()
+    # def plot_learning_curve(self):
+
+
 ####################################################################################
 # Define parameters
 ####################################################################################
@@ -144,10 +155,12 @@ NUM_EPOCHS = 10000
 LEARNING_RATE = 0.1
 def main():
     if len(sys.argv)<2:
-        print('Please enter input file name, for instance: python3 trainLMP.py train_data.csv')
+        print('Please enter input file name, for instance: python3 trainLMP.py train_data.csv 10000')
     else:
         nnet = MLP(sys.argv[1], NUM_LAYERS, NUM_INPUT_NODE, NUM_HIDDEN_NODE, NUM_OUTPUT_NODE)
-        nnet.train(LEARNING_RATE, NUM_EPOCHS)
-
+        if sys.argv[2]==None:
+            nnet.train(LEARNING_RATE, NUM_EPOCHS)
+        else:
+            nnet.train(LEARNING_RATE, int(sys.argv[2]))
 if __name__ == "__main__":
     main()
