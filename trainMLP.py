@@ -161,7 +161,7 @@ def main():
         print('Please enter input file name, for instance: python3 trainLMP.py train_data.csv 10000')
     else:
         nnet = MLP(sys.argv[1], NUM_LAYERS, NUM_INPUT_NODE, NUM_HIDDEN_NODE, NUM_OUTPUT_NODE)
-        if sys.argv[2]==None:
+        if len(sys.argv)<3:
             nnet.train(LEARNING_RATE, NUM_EPOCHS)
         else:
             nnet.train(LEARNING_RATE, int(sys.argv[2]))
