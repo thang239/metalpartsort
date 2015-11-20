@@ -24,5 +24,34 @@ Output:
        numEpochs_config
     - After training network, error file and plot of learning curve will be given by name 'error.csv' and 'learning_curve.png'
 
+
 1.2 Executing
     
+
+2. Decision Tree
+
+2.1 Training
+Running command: python3 trainDT.py train_data.csv
+with:
+    -trainDT.py : name of main file
+    -train_data.csv: training data
+
+Output :
+
+Prints the following summary and plots the plot for region splitting for decision and pruned decision tree.
+    Summary for Tree
+    Number of Nodes
+    Number of Internal Nodes
+    Number of Leaf Nodes
+    Max depth of root-to-leaf path
+    Min depth of root-to-leaf path
+    Average depth of root-to-leaf path
+
+2.2 Testing
+Running command: python3 executeDT.py test_data.csv
+with:
+    -executeDT.py : name of main file
+    -test_data.csv: testing data
+
+Output:
+
