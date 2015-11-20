@@ -2,7 +2,7 @@
 *.aux
 *.log
 *.synctex.gz
-.idea/
+.idea/*.*
 __pycache__/
 *.tex
 *.xml

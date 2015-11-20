@@ -20,7 +20,13 @@ NUM_EPOCHS = 10000
 LEARNING_RATE = 0.1
 
 Output: 
+    - The file containing neural network weights will be given at specific epochs(0,10,100,1000,10000) in format:
+       numEpochs_config
+    - After training network, error file and plot of learning curve will be given by name 'error.csv' and 'learning_curve.png'
 
+
+1.2 Executing
+    
 
 2. Decision Tree
 
@@ -49,3 +55,4 @@ with:
 
 Output:
 
+ 
