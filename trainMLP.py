@@ -134,18 +134,11 @@ class MLP:
         for s in sse:
             f.write('%s\n'%s)
             xvalues.append(sse.index(s))
-        # print(xvalues)
         plt.plot(xvalues,sse,'r')
         plt.xlabel('Epochs')
         plt.ylabel('Sum squared error')
         plt.title('Sum squared error after each epoch')
         plt.savefig('learning_curve.png')
-<<<<<<< HEAD
-        plt.show()
-=======
->>>>>>> ffff3eb1ed4c4ae3c9c5f89b28cb7771a31bc970
-    # def plot_learning_curve(self):
-
 
 ####################################################################################
 # Define parameters
