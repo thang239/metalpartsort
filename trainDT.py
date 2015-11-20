@@ -175,9 +175,9 @@ class Node:
         region_color = ['#FFEFD5','#87CEEB','#EE82EE','#B0C4DE']
         object_color=['red','blue','green','yellow']
         for p in range(len(simulated_data)):
-            ax.scatter(float(simulated_data[p][0]),float(simulated_data[p][1]),c=region_color[int(op[p])-1],s=80)
+            ax.scatter(float(simulated_data[p][0]),float(simulated_data[p][1]),c=object_color[int(op[p])-1],s=80,alpha=0.2)
         for p in range(len(list)):
-            ax.scatter(float(list[p][0]),float(list[p][1]),c=object_color[int(classified_values[p])-1],s=120)
+            ax.scatter(float(list[p][0]),float(list[p][1]),c=object_color[int(classified_values[p])-1],s=120,alpha=1)
         red_patch = patches.Patch(color='red', label='Bolt')
         lime_patch = patches.Patch(color='blue', label='Nut')
         cyan_patch = patches.Patch(color='green', label='Ring')
