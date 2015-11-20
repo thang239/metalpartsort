@@ -66,23 +66,23 @@ class Node:
         print("Summary for ",name," :")
         numOfNodes = self.getNodeCount()
         leafNodes=self.getLeafCount()
-        print("Number of Nodes : ",)
-        print("Number of Internal Nodes : ",)
-        print("Number of Leaf Nodes : ",self.getLeafCount())
+        print("Number of Nodes : ",numOfNodes)
+        print("Number of Internal Nodes : ",numOfNodes-leafNodes)
+        print("Number of Leaf Nodes : ",leafNodes)
         print("Max depth of root-to-leaf path : ",path_list[len(path_list)-1])
         print("Min depth of root-to-leaf path : ",path_list[0])
         print("Average depth of root-to-leaf path : ",statistics.mean(path_list))
         print()
 
 ####################################################################################
-# Define profits matrix
+# export_configuration : Exports the file configuration
 ####################################################################################
     def export_configuration(self,filename):
         f = open(str(filename)+'_config','wb')
         pickle.dump(self,f,pickle.HIGHEST_PROTOCOL)
         f.close()
 ###################################################################################
-# Define profits matrix
+# plotSpaceDivision : Plots the decision tree space
 ####################################################################################
     def plotSpaceDivision(self,list,name):
         op=[]
@@ -98,13 +98,16 @@ class Node:
         self.plotSpace(simulated_data,op,name)
 
 ####################################################################################
-# Define profits matrix
+# getPlotList : Gets the list of co-ordinates for region split
 ####################################################################################
     def getPlotList(self,input_list,level,op):
+        #check for leaf node
         if self.left != None and self.right != None:
+            #split the data
             separated_data=split_data(input_list,self.attribute,self.threshold)
             left_data=separated_data[0]
             right_data=separated_data[1]
+            #Splitting on attribute 1
             if self.attribute==0:
                 x=self.threshold
                 ymin=float(min(min(left_data,key=lambda x : x[1])[1],min(right_data,key=lambda x : x[1])[1]))
@@ -116,7 +119,7 @@ class Node:
                 right_width=xmax-x
                 op.append([x,ymin,left_width,height,level])
                 op.append([x,ymin,right_width,height,level])
-            else:
+            else: #Splitting on attribute 2
                 y=self.threshold
                 xmin=float(min(min(left_data,key=lambda x : x[0])[0],min(right_data,key=lambda x : x[0])[0]))
                 xmax=float(max(max(left_data,key=lambda x : x[0])[0],max(right_data,key=lambda x : x[0])[0]))
@@ -129,15 +132,19 @@ class Node:
                 op.append([xmin,y,width,upper_height,level])
             self.left.getPlotList(left_data,(level+1),op)
             self.right.getPlotList(right_data,(level+1),op)
-
+####################################################################################
+# getPlotList : Gets the list of co-ordinates for region split
+####################################################################################
     def plotDivision(self,list,op,name):
         plot_list=[]
         color=['r','g','b','violet','gray','plum','m','brown','orange','purple']
         object_color=["red","lime","cyan","black"]
         fig= plt.figure()
         ax = fig.add_subplot(111)
+        # Adding the rectangular patches
         for p in op:
             ax.add_patch(patches.Rectangle((float(p[0]),float(p[1])),float(p[2]),float(p[3]),fill=False,edgecolor=color[int(p[4])]))
+        #Adding the points
         for p in range(len(list)):
             ax.scatter(float(list[p][0]),float(list[p][1]),c=object_color[int(list[p][2])-1])
         red_patch = patches.Patch(color='red', label='Bolt')
