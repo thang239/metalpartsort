@@ -397,8 +397,10 @@ def chiSquarePruning(tree,input_list,threshold):
 
             # calculate the degree of freedom for the parent
             freedom=len(class_values)-1
+
             total_left=sum(left_values.values())
             total_right=sum(right_values.values())
+            print(total_left)
             left_chisquare=0
             right_chisquare=0
             # Generate the chisquare value for the left child

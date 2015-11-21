@@ -26,8 +26,18 @@ Output:
 
 
 1.2 Executing
+Running command: python3 executeMLP.py config_file
+with:
+    - executeMLP.py : name of executing file
+    - config_file: configuration file, contain MLP neural network, if this parameter is not specified, all 5 neural network 
+    will be run one by one
+    Example: python3 executeMLP.py 1000_config
+Output: 
+    Recognition rate: Percentage of correct classification
+    Profit: Profit obtain in cents of classification task
+    Confusion matrix: Actual metal part(column) vs assigned class(Row)
+    All classification region plot will be saved in ./figure folder
     
-
 2. Decision Tree
 
 2.1 Training
