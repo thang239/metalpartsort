@@ -112,7 +112,6 @@ class MLP:
         for i in range(iterations+1):
             errList = []
             for sample in self.samples:
-                # print(sample)
                 self.feedForward(sample)
                 errList.append(self.backProgapate(sample, learning_rate))
             if i in dump_epochs:
