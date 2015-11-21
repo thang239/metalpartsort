@@ -3,8 +3,8 @@ import sys
 import statistics
 import math
 import pickle
-from pylab import *
 import numpy as np
+from pylab import *
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 ####################################################################################
@@ -88,7 +88,7 @@ class Node:
 ####################################################################################
     def plotPoints(self,list,classified_values,name):
         op=[]
-        x=np.arange(0,1.01,0.02)
+        x=np.arange(0,1.01,0.01)
         simulated_data=[]
         for i in range(0,len(x)):
             for j in range(0,len(x)):
@@ -163,6 +163,8 @@ class Node:
         plt.legend(handles=[red_patch,lime_patch,cyan_patch,black_patch],fontsize = 'x-small')
         plt.ylabel('Rotational Symmetry')
         plt.xlabel('Eccentricity')
+        plt.xlim([0,1])
+        plt.ylim([0,1])
         plt.savefig(name)
         plt.show()
 
@@ -175,7 +177,7 @@ class Node:
         region_color = ['#FFEFD5','#87CEEB','#EE82EE','#B0C4DE']
         object_color=['red','blue','green','yellow']
         for p in range(len(simulated_data)):
-            ax.scatter(float(simulated_data[p][0]),float(simulated_data[p][1]),c=object_color[int(op[p])-1],s=80,alpha=0.2)
+            ax.scatter(float(simulated_data[p][0]),float(simulated_data[p][1]),c=object_color[int(op[p])-1],marker = 'o',edgecolors='w',s=80,alpha=0.2)
         for p in range(len(list)):
             ax.scatter(float(list[p][0]),float(list[p][1]),c=object_color[int(classified_values[p])-1],s=120,alpha=1)
         red_patch = patches.Patch(color='red', label='Bolt')
@@ -185,6 +187,8 @@ class Node:
         plt.legend(handles=[red_patch,lime_patch,cyan_patch,black_patch],fontsize = 'x-small')
         plt.ylabel('Rotational Symmetry')
         plt.xlabel('Eccentricity')
+        plt.xlim([0,1])
+        plt.ylim([0,1])
         plt.savefig(name)
         plt.show()
 
@@ -441,7 +445,14 @@ def main():
     else:
         attributes=[]
         filename=sys.argv[1]
+        #Significance  - 0.5%
+        #significance = {3:12.838,2:10.597,1:7.879}
+        #Significance  - 1%
+        #significance = {3:11.345,2:9.210,1:6.635}
+        #Significance  - 5%
         significance = {3:7.815,2:5.991,1:3.841}
+        #Significance  - 90%
+        #significance = {3:0.584,2:0.211,1:0.016}
         # Extracting the Training data
         #list,class_values=readFile(filename)
         list=parse_csv(filename)
