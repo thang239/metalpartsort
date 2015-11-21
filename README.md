@@ -64,5 +64,5 @@ with:
     -test_data.csv: testing data
 
 Output:
-
- 
+Prints the following Recognition rate, Profit obtained, Confusion matrix for the testing data.
+It plots the classified data on classified regions.
